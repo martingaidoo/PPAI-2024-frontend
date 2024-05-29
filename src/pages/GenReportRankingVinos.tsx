@@ -1,9 +1,25 @@
 import { ComponentTomarFecha } from '../components/ComponentTomarFecha'
 import { ComponenteTomarFormaVisualizacionReporte } from '../components/ComponenteTomarFormaVisualizacionReporte'
+import { getGenerarReporteRankingVinos } from "../../services/API"
+import React, { useEffect } from 'react';
+
 
 export const GenReportRankingVinos = () => {
   const tomarFecha = true
   const tomarReseñaVisualizacion = false
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getGenerarReporteRankingVinos();
+        console.log('Datos del ranking de vinos:', data);
+      } catch (error) {
+        console.error('Error al obtener los datos del ranking de vinos:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
 
   return (
     <>   

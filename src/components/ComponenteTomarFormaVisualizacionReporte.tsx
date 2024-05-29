@@ -2,7 +2,7 @@ import React from 'react'
 
 export const ComponenteTomarFormaVisualizacionReporte = () => {
     const opcioenReseñas = ["Normal", "De amigos", "sommelier"]
-    const opcioenVisualizacion = ["PDF", "Exel", "Pantalla"]
+    const opcioenVisualizacion = ["PDF", "Excel", "Pantalla"]
 
   return (
     <>
@@ -34,7 +34,6 @@ export const ComponenteTomarFormaVisualizacionReporte = () => {
     <h4>Seleccione la forma de visualizacion</h4>
 
     <select className="form-control bg-black text-white">
-                  <option value="">Selecciona una opción</option>
                   <option value="">Selecciona una opción</option>
                   {opcioenVisualizacion.map((opcion,index)=>(
                     <option key={index} value={opcion}>{opcion}</option>
