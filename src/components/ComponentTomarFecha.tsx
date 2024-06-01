@@ -1,36 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react';
 import "../styles/styleInputFecha.css"
 
-export const ComponentTomarFecha = () => {
+export const ComponentTomarFecha = ({ onFechaInicioChange, onFechaFinChange }) => {
+  const [fechaInicioLocal, setFechaInicioLocal] = useState<Date>();
+  const [fechaFinLocal, setFechaFinLocal] = useState<Date>();
+
+  const handleFechaInicioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fecha = new Date(event.target.value);
+    setFechaInicioLocal(fecha);
+    onFechaInicioChange(fecha); // Pasamos la fecha seleccionada al componente padre
+    console.log(fecha);
+  };
+
+  const handleFechaFinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fecha = new Date(event.target.value);
+    setFechaFinLocal(fecha);
+    onFechaFinChange(fecha); // Pasamos la fecha seleccionada al componente padre
+    console.log(fecha);
+  };
+
   return (
     <>
-        <div className="card text-bg-dark text-center">
-  <div className="card-header">
-    <h4>Seleccione dos Fechas</h4>
-  </div>
-  <div className="card-body">
-    <div className='container'> 
-    <div className="row">
-        
-    <div className='col'>
-        <h5 className="card-title">Fecha Inicio</h5>
-        <input className="form-control bg-black text-white" type="date"/>
-    </div>
-    <div className='col'>
-        <h5 className="card-title">Fecha Fin</h5>
-        <input className="form-control bg-black text-white" type="date"/>
-    </div>
-
-    </div>
-    
-    </div>
-    
-
-  </div>
-  <div className="card-footer text-body-secondary">
-  <a href="#" className="btn btn-primary">Confirmar</a>
-  </div>
-</div>
+      <div className='container'> 
+        <div className="row">
+          <div className='col'>
+            <h5 className="card-title">Fecha Inicio</h5>
+            <input 
+              className="form-control bg-black text-white" 
+              type="date"
+              value={fechaInicioLocal?.toISOString().substr(0, 10) || ''}
+              onChange={handleFechaInicioChange}
+            />
+          </div>
+          <div className='col'>
+            <h5 className="card-title">Fecha Fin</h5>
+            <input 
+              className="form-control bg-black text-white" 
+              type="date"
+              value={fechaFinLocal?.toISOString().substr(0, 10) || ''}
+              onChange={handleFechaFinChange}
+            />
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 }
