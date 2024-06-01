@@ -1,11 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-export const ComponentBotonConfirmacion = () => {
-  return (
-    <>
-        <div>
-        <a href="#" className="btn btn-primary">Confirmar</a>
-    </div>
-    </>
-  )
+interface ComponentBotonConfirmacionProps {
+  onConfirmacionReporte: () => void;
 }
+
+export const ComponentBotonConfirmacion: React.FC<ComponentBotonConfirmacionProps> = ({ onConfirmacionReporte }) => {
+  return (
+    <div>
+      <button className="btn btn-primary" onClick={onConfirmacionReporte}>
+        Confirmar
+      </button>
+    </div>
+  );
+};

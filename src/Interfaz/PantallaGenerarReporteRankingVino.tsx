@@ -20,6 +20,7 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [fechaFin, setFechaFin] = useState<Date>();
   const [tipoReseña, setTipoReseña] = useState<string>("sin seleccion");
   const [formaVisualizacionReporte, setFormaVisualizacionReporte] = useState<string>("sin seleccion");
+  const [confirmacionReporte, setConfirmacionReporte] = useState<boolean>(false);
 
  
   const tomarSeleccionFechaInicio = (fecha:Date) => {
@@ -53,15 +54,22 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   }
 
   const tomarFormaVisualizacionReporte = (formaVisualizacionReporte: string) => {
-
     setFormaVisualizacionReporte(formaVisualizacionReporte);
+  }
 
+  const solicitarConfirmacionReporte = () => {
+    setHabilitarConfirmacion(true);
+    console.log("entro en la confirmacionnnnnnnnnn")
+  }
+
+  const tomarConfirmacionReporte = () => {
+    setConfirmacionReporte(true);
   }
 
   useEffect(() => {
     // Creamos una instancia del gestor cuando se monta el componente
     const main = new Main();
-    const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarTipoReseña, solicitarFormaVisualizacionReporte); // Pasamos los vinos al gestor
+    const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarTipoReseña, solicitarFormaVisualizacionReporte, solicitarConfirmacionReporte); // Pasamos los vinos al gestor
     setGestor(gestor);
 
     habilitarPantalla() // Llamamos al método para habilitar la pantalla
@@ -79,12 +87,22 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
         if (tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
 
           console.log("se selecciono el tipo de reseña");
-
           gestor.tomarSeleccionTipoReseña(tipoReseña); // Llamamos al método del gestor
+        }
+
+        if (formaVisualizacionReporte !== "sin seleccion" && tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
+          console.log("se selecciono la forma de visualizacion");
+          gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // Llamamos al método del gestor
 
         }
 
-  }, [fechaInicio, fechaFin, tipoReseña]);
+        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
+          console.log("se confirmo el reporte");
+          gestor.tomarConfirmacionReporte(); // Llamamos al método del gestor
+        }
+
+
+  }, [fechaInicio, fechaFin, tipoReseña,formaVisualizacionReporte, confirmacionReporte]);
 
 
   return (
@@ -101,10 +119,10 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
                 <div className="card-body">
                   {habilitarTomarFechas && <ComponentTomarFecha onFechaInicioChange={tomarSeleccionFechaInicio} onFechaFinChange={tomarSeleccionFechaFin}/>} {/* Pasamos el método del gestor como prop */}
                   {habilitarTipoReseña && <ComponentTipoReseña onTipoReseñaChange={tomarSeleccionTipoReseña}/>} {/* Pasamos el método del gestor como prop */}
-                  {habilitarFormaVisualizacion && <ComponenteTomarFormaVisualizacionReporte/> }{/* Pasamos el método del gestor como prop */}
+                  {habilitarFormaVisualizacion && <ComponenteTomarFormaVisualizacionReporte onFormaVisualizacionReporte={tomarFormaVisualizacionReporte}/> }{/* Pasamos el método del gestor como prop */}
                 </div>
                 <div className="card-footer text-body-secondary">
-                  {habilitarConfirmacion && <ComponentBotonConfirmacion/>} {/* Pasamos el método del gestor como prop */}
+                  {habilitarConfirmacion && <ComponentBotonConfirmacion onConfirmacionReporte={tomarConfirmacionReporte}/>} {/* Pasamos el método del gestor como prop */}
                 </div>
               </div>
             </div>

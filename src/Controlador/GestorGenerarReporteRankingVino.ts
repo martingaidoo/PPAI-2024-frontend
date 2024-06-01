@@ -4,6 +4,7 @@ interface PantallaGenerarReporte {
     solicitarSeleccionFechasInicioFin: () => void;
     mostrarTipoReseña: () => boolean;
     solicitarFormaVisualizacionReporte: () => void;
+    solicitarConfirmacionReporte: () => void;
   }
 
 export class GestorGenerarReporteRankingVino {
@@ -23,9 +24,10 @@ export class GestorGenerarReporteRankingVino {
     solicitarSeleccionFechasInicioFin: () => void;
     mostrarTipoReseña: () => boolean;
     solicitarFormaVisualizacionReporte: () => void;
+    solicitarConfirmacionReporte: () => void;
 
 
-    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarTipoReseña: () => boolean,solicitarFormaVisualizacionReporte: () => void, pantalla: PantallaGenerarReporte | null = null) {
+    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarTipoReseña: () => boolean,solicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void, pantalla: PantallaGenerarReporte | null = null) {
         this.fechaInicio = new Date();
         this.fechaFin = new Date();
         this.tiposReportes = ["Reseñas normales", "Reseñas de Sommelier", "Reseñas de Amigos"];
@@ -41,6 +43,7 @@ export class GestorGenerarReporteRankingVino {
         this.solicitarSeleccionFechasInicioFin = solicitarSeleccionFechasInicioFin;
         this.mostrarTipoReseña = mostrarTipoReseña;
         this.solicitarFormaVisualizacionReporte = solicitarFormaVisualizacionReporte;
+        this.solicitarConfirmacionReporte = solicitarConfirmacionReporte;
         this.pantalla = pantalla;
         
     }
@@ -51,6 +54,8 @@ export class GestorGenerarReporteRankingVino {
 
     tomarSeleccionFechaInicioFin(fechaInicio: Date, fechaFin: Date): boolean {
         if (this.validarFechas(fechaInicio, fechaFin)){
+            this.setFechaInicio(fechaInicio)
+            this.setFechaFin(fechaFin)
             console.log("Fechas seleccionadas correctamente");
             this.mostrarTipoReseña(); //llama a la funcion mostrarTipoReseña de la pantalla
             return true;
@@ -64,19 +69,25 @@ export class GestorGenerarReporteRankingVino {
         this.solicitarFormaVisualizacionReporte();
     }
 
-    tomarFormaVisualizacionReporte(): void {
-        console.log("Forma de visualización seleccionada");
+    tomarFormaVisualizacionReporte(formaVisualizacionReporte: string): void {
+        this.setTipoVisualizacionSeleccionada(formaVisualizacionReporte);
+        this.solicitarConfirmacionReporte();
     }
 
     tomarConfirmacionReporte(): void {
-        console.log("Reporte confirmado.");
+        console.log("Reporte confirmadoooooooooooooooo.");
+        const vinosFiltradosPorReseña= this.buscarVinosConReseñasPorTipoYEnFecha(this.fechaInicio, this.fechaFin, this.vinos);
+        const vinosCalificados = this.calcularCalificacionPromedio(vinosFiltradosPorReseña);
+        const primeros10VinosCalificados = this.tomar10PrimerosVinosCalificados(vinosCalificados);
+        const datosDeLos10MejoresVinos = this.buscarDatos10MejoresVinos(primeros10VinosCalificados);
+        console.log(datosDeLos10MejoresVinos);
     }
 
     validarFechas(fechaInicio: Date, fechaFin: Date): boolean {
         return fechaInicio < fechaFin;
     }
 
-    buscarVinosConReseñasPorTipoYFecha(fechaInicio: Date, fechaFin: Date, vinos: Vino[]): Vino[] {
+    buscarVinosConReseñasPorTipoYEnFecha(fechaInicio: Date, fechaFin: Date, vinos: Vino[]): Vino[] {
         const vinosFiltradosPorReseña: Vino[] = [];
         for (let vino of vinos) {
             const estaEnPeriodoYEsSomelier = vino.obtenerReseñas(fechaInicio, fechaFin);
@@ -124,5 +135,15 @@ export class GestorGenerarReporteRankingVino {
 
     setTipoReseñaSeleccionada(tipoReseña: string): void {
         this.tipoReseñaSeleccionada = tipoReseña;
+    }
+
+    setTipoVisualizacionSeleccionada(tipoVisualizacionSeleccionada: string){
+        this.tipoVisualizacionSeleccionada = tipoVisualizacionSeleccionada;
+    }
+    setFechaInicio(fechaInicio: Date): void {
+        this.fechaInicio = fechaInicio;
+    }
+    setFechaFin(fechaFin: Date): void {
+        this.fechaFin = fechaFin;
     }
 }
