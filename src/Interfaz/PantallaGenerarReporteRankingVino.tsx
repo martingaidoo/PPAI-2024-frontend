@@ -21,6 +21,7 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [tipoReseña, setTipoReseña] = useState<string>("sin seleccion");
   const [formaVisualizacionReporte, setFormaVisualizacionReporte] = useState<string>("sin seleccion");
   const [confirmacionReporte, setConfirmacionReporte] = useState<boolean>(false);
+  let fechaValida: boolean = false;
 
  
   const tomarSeleccionFechaInicio = (fecha:Date) => {
@@ -59,7 +60,6 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
 
   const solicitarConfirmacionReporte = () => {
     setHabilitarConfirmacion(true);
-    console.log("entro en la confirmacionnnnnnnnnn")
   }
 
   const tomarConfirmacionReporte = () => {
@@ -78,25 +78,36 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
 
     //tomarFechasInicioFin();
     if (fechaInicio && fechaFin)
-      {console.log("se seleccionaron las 2 fechas")
-      
-        gestor.tomarSeleccionFechaInicioFin(fechaInicio, fechaFin); // Llamamos al método del gestor
+      {
+        fechaValida = gestor.tomarSeleccionFechaInicioFin(fechaInicio, fechaFin)
+        if (!fechaValida) // Llamamos al método del gestor
+        {
+          setHabilitarTipoReseña(false)
+          setHabilitarFormaVisualizacion(false)
+          setHabilitarConfirmacion(false)
+          setTipoReseña("sin seleccion")
+          setFormaVisualizacionReporte("sin seleccion")
+        }
       }
 
       //tomarTipoReseña();
-        if (tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
-
-          console.log("se selecciono el tipo de reseña");
+        if (tipoReseña !== "sin seleccion" && tipoReseña!=="" && fechaValida) {
           gestor.tomarSeleccionTipoReseña(tipoReseña); // Llamamos al método del gestor
         }
-
-        if (formaVisualizacionReporte !== "sin seleccion" && tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
-          console.log("se selecciono la forma de visualizacion");
-          gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // Llamamos al método del gestor
-
+        else{
+          setHabilitarFormaVisualizacion(false)
+          setHabilitarConfirmacion(false)
+          setFormaVisualizacionReporte("sin seleccion")
         }
 
-        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReseña !== "sin seleccion" && fechaInicio && fechaFin) {
+        if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReseña !== "sin seleccion" && tipoReseña!== ""&& fechaValida) {
+          gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // Llamamos al método del gestor
+        }
+        else{
+          setHabilitarConfirmacion(false)
+        }
+
+        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReseña !== "sin seleccion" && fechaValida) {
           console.log("se confirmo el reporte");
           gestor.tomarConfirmacionReporte(); // Llamamos al método del gestor
         }

@@ -1,8 +1,7 @@
 import { Vino } from '../Modelo/vino';
-
 interface PantallaGenerarReporte {
     solicitarSeleccionFechasInicioFin: () => void;
-    mostrarTipoReseña: () => boolean;
+    mostrarTipoReseña: () => void;
     solicitarFormaVisualizacionReporte: () => void;
     solicitarConfirmacionReporte: () => void;
   }
@@ -22,12 +21,12 @@ export class GestorGenerarReporteRankingVino {
     datosVinosRankeados: any;
     vinos: Vino[];
     solicitarSeleccionFechasInicioFin: () => void;
-    mostrarTipoReseña: () => boolean;
+    mostrarTipoReseña: () => void;
     solicitarFormaVisualizacionReporte: () => void;
     solicitarConfirmacionReporte: () => void;
 
 
-    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarTipoReseña: () => boolean,solicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void, pantalla: PantallaGenerarReporte | null = null) {
+    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarTipoReseña: () => void,solicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void, pantalla: PantallaGenerarReporte | null = null) {
         this.fechaInicio = new Date();
         this.fechaFin = new Date();
         this.tiposReportes = ["Reseñas normales", "Reseñas de Sommelier", "Reseñas de Amigos"];
@@ -56,11 +55,9 @@ export class GestorGenerarReporteRankingVino {
         if (this.validarFechas(fechaInicio, fechaFin)){
             this.setFechaInicio(fechaInicio)
             this.setFechaFin(fechaFin)
-            console.log("Fechas seleccionadas correctamente");
             this.mostrarTipoReseña(); //llama a la funcion mostrarTipoReseña de la pantalla
             return true;
         }
-        console.log("Fechas seleccionadas incorrectamente");
         return false;
     }
 
@@ -81,6 +78,7 @@ export class GestorGenerarReporteRankingVino {
         const primeros10VinosCalificados = this.tomar10PrimerosVinosCalificados(vinosCalificados);
         const datosDeLos10MejoresVinos = this.buscarDatos10MejoresVinos(primeros10VinosCalificados);
         console.log(datosDeLos10MejoresVinos);
+
     }
 
     validarFechas(fechaInicio: Date, fechaFin: Date): boolean {
