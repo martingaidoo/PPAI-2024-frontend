@@ -63,7 +63,7 @@ export class Vino {
 
     calcularRanking(): number {
         const totalPuntajes = this.reseñas.reduce((acc, reseña) => acc + reseña.getPuntaje(), 0);
-        return this.reseñas.length > 0 ? totalPuntajes / this.reseñas.length : 0;
+        return this.reseñas.length > 0 ? parseFloat((totalPuntajes / this.reseñas.length).toFixed(2)) : 0;
     }
 
     setNombre(nombre: string): void {

@@ -56,4 +56,5 @@ export class GeneradorArchivoExcel {
     }
 }
 
-
+const generadorArchivoExcel = new GeneradorArchivoExcel();
+export { generadorArchivoExcel}

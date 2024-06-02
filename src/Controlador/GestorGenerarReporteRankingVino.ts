@@ -1,11 +1,13 @@
 import { Vino } from '../Modelo/vino';
 import {GeneradorArchivoExcel} from '../Interfaz/GeneradorArchivoExcel';
+import {generadorArchivoExcel} from '../Interfaz/GeneradorArchivoExcel';
 
 interface PantallaGenerarReporte {
-    solicitarSeleccionFechasInicioFin: () => void;
-    mostrarTipoReporte: () => void;
-    solicitarFormaVisualizacionReporte: () => void;
-    solicitarConfirmacionReporte: () => void;
+    solicitarSeleccionFechasInicioFin: () => void; //son motodos de la pantalla
+    mostrarYSolicitarTipoReporte: () => void; //son motodos de la pantalla
+    solicitarFormaVisualizacionReporte: () => void; //son motodos de la pantalla
+    solicitarConfirmacionReporte: () => void; //son motodos de la pantalla
+    mostrarConfirmacionGeneracionReporte: () => void; //son motodos de la pantalla
 }
 
 export class GestorGenerarReporteRankingVino {
@@ -23,13 +25,15 @@ export class GestorGenerarReporteRankingVino {
     vinosRanking10: any[];
     datosVinosRankeados: any;
     vinos: Vino[];
-    solicitarSeleccionFechasInicioFin: () => void;
-    mostrarTipoReseña: () => void;
-    solicitarFormaVisualizacionReporte: () => void;
-    solicitarConfirmacionReporte: () => void;
+    
+    solicitarSeleccionFechasInicioFin: () => void; //son metodos de la pantalla
+    mostrarYSolicitarTipoReporte: () => void; //son metodos de la pantalla
+    solicitarFormaVisualizacionReporte: () => void; //son metodos de la pantalla
+    solicitarConfirmacionReporte: () => void; //son metodos de la pantalla
+    mostrarConfirmacionGeneracionReporte: () => void;//son metodos de la pantalla
 
 
-    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarTipoReseña: () => void,solicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void, pantalla: PantallaGenerarReporte | null = null) {
+    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarYSolicitarTipoReporte: () => void,solicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void,mostrarConfirmacionGeneracionReporte: () =>void, pantalla: PantallaGenerarReporte | null = null) {
         this.fechaInicio = new Date();
         this.fechaFin = new Date();
         this.tiposReportes = ["Reseñas normales", "Reseñas de Sommelier", "Reseñas de Amigos"];
@@ -44,9 +48,10 @@ export class GestorGenerarReporteRankingVino {
         this.datosVinosRankeados = {};
         this.vinos = vinos;
         this.solicitarSeleccionFechasInicioFin = solicitarSeleccionFechasInicioFin;
-        this.mostrarTipoReseña = mostrarTipoReseña;
+        this.mostrarYSolicitarTipoReporte = mostrarYSolicitarTipoReporte;
         this.solicitarFormaVisualizacionReporte = solicitarFormaVisualizacionReporte;
         this.solicitarConfirmacionReporte = solicitarConfirmacionReporte;
+        this.mostrarConfirmacionGeneracionReporte = mostrarConfirmacionGeneracionReporte;
         this.pantalla = pantalla;
         
     }
@@ -59,7 +64,7 @@ export class GestorGenerarReporteRankingVino {
         if (this.validarFechas(fechaInicio, fechaFin)){//8. validarFechas()
             this.setFechaInicio(fechaInicio)
             this.setFechaFin(fechaFin)
-            this.mostrarTipoReseña(); //9. mostrarTipoReseña()
+            this.mostrarYSolicitarTipoReporte(); //9. mostrarTipoReseña()
             return true;
         }
         return false;
@@ -88,6 +93,7 @@ export class GestorGenerarReporteRankingVino {
         console.log("datos vinos rankeados",datosVinosRankeados);
 
         this.generarArchivoExcel(datosVinosRankeados);
+        this.mostrarConfirmacionGeneracionReporte();
     }
 
     validarFechas(fechaInicio: Date, fechaFin: Date): boolean {

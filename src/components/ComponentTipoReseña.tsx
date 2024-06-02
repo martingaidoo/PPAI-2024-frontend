@@ -6,7 +6,8 @@ interface ComponentTipoReseñaProps {
 
 export const ComponentTipoReseña: React.FC<ComponentTipoReseñaProps> = ({ onTipoReseñaChange }) => {
     const [tipoReseña, setTipoReseña] = useState<string>();
-    const opcionesReseñas = ["Normal", "De amigos", "sommelier"];
+    const opcionesReseñas = ["Normal", "De amigos", "Sommelier"];
+    
 
     const TipoReseñaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const reseña = event.target.value;

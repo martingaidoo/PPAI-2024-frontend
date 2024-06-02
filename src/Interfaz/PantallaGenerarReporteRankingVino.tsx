@@ -6,8 +6,9 @@ import { ComponentBotonConfirmacion } from '../components/ComponentBotonConfirma
 import { Header } from '../components/Header';
 import { Main } from '../Controlador/Main';
 import { GestorGenerarReporteRankingVino } from '../Controlador/GestorGenerarReporteRankingVino'; // Importamos el gestor
-import { useNavigate } from 'react-router-dom';
-//import { ComponentToast } from '../components/ComponentToast';
+import AlertOnScreen from '../components/ComponentToast';
+import { List } from 'reactstrap';
+
 
 
 export const PantallaGenerarReporteRankingVino: React.FC = () => {
@@ -19,12 +20,15 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [habilitarConfirmacion, setHabilitarConfirmacion] = useState<boolean>(false);
   const [fechaInicio, setFechaInicio] = useState<Date>();
   const [fechaFin, setFechaFin] = useState<Date>();
-  const [tipoReporte, setTipoReporte] = useState<string>("sin seleccion");
+  const [tipoReporteSeleccionado, setTipoReporteSeleccionado] = useState<string>("sin seleccion");
   const [formaVisualizacionReporte, setFormaVisualizacionReporte] = useState<string>("sin seleccion");
   const [confirmacionReporte, setConfirmacionReporte] = useState<boolean>(false);
   let fechaValida: boolean = false;
+  const [showAlert, setShowAlert] = useState(false); // Agrega este estado para mostrar la alerta de fecha invalida
 
- 
+  //const [tipoReporte, setTipoReporte] = useState<List>();
+
+  
   const tomarSeleccionFechaInicio = (fecha:Date) => {//5. tomarSeleccionFechaInicio()
     setFechaInicio(fecha);
   }
@@ -32,7 +36,6 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const tomarSeleccionFechaFin = (fecha:Date) => { //6. tomarSeleccionFechaFin()
     setFechaFin(fecha);
   }
-
 
   const habilitarPantalla = () => {
     setPantalla(true);
@@ -42,13 +45,12 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     setHabilitarTomarFechas(true);
   }
 
-  const mostrarTipoReporte = () => {// 9. mostrarTipoReporte()
+  const mostrarYSolicitarTipoReporte = () => {// 9. mostrarYSeleccionarTipoReporte()
     setHabilitarTipoReporte(true);
   }
 
   const tomarSeleccionTipoReporte = (reseña:string) =>{ //10. tomarSeleccionTipoReporte()
-    setTipoReporte(reseña);
-    console.log(reseña);
+    setTipoReporteSeleccionado(reseña);
   }
 
   const solicitarFormaVisualizacionReporte = () => {//12. solicitarFormaVisualizacionReporte()
@@ -67,10 +69,26 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     setConfirmacionReporte(true);
   }
 
+ // main.ts
+
+// Función para mostrar la alerta de confirmación y generar el archivo
+const mostrarConfirmacionGeneracionReporte = () => {
+  alert('Reporte generado exitosamente');
+  finCU();
+  
+}
+
+const finCU = () => {
+
+  // Cambia la ruta a la que quieras, por ejemplo '/nueva-ruta'
+  window.location.href = '/'; // Redirige a la ruta raíz
+
+}
+  
   useEffect(() => {
     // Creamos una instancia del gestor cuando se monta el componente
     const main = new Main();
-    const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarTipoReporte, solicitarFormaVisualizacionReporte, solicitarConfirmacionReporte); // Pasamos los vinos al gestor
+    const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, solicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte); // Pasamos los vinos al gestor
     setGestor(gestor);
 
     habilitarPantalla() // 2. habilitarPantalla()
@@ -86,14 +104,16 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
           setHabilitarTipoReporte(false)
           setHabilitarFormaVisualizacion(false)
           setHabilitarConfirmacion(false)
-          setTipoReporte("sin seleccion")
+          setTipoReporteSeleccionado("sin seleccion")
           setFormaVisualizacionReporte("sin seleccion")
+          setShowAlert(true); // Muestra la alerta de fecha inválida
+          
         }
       }
 
       //tomarTipoReseña();
-        if (tipoReporte !== "sin seleccion" && tipoReporte!=="" && fechaValida) {
-          gestor.tomarSeleccionTipoReporte(tipoReporte); // 11. tomarSeleccionTipoReseña()
+        if (tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!=="" && fechaValida) {
+          gestor.tomarSeleccionTipoReporte(tipoReporteSeleccionado); // 11. tomarSeleccionTipoReseña()
         }
         else{
           setHabilitarFormaVisualizacion(false)
@@ -101,27 +121,29 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
           setFormaVisualizacionReporte("sin seleccion")
         }
 
-        if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporte !== "sin seleccion" && tipoReporte!== ""&& fechaValida) {
+        if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!== ""&& fechaValida) {
           gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // 
         }
         else{
           setHabilitarConfirmacion(false)
         }
 
-        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReporte !== "sin seleccion" && fechaValida) {
+        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReporteSeleccionado !== "sin seleccion" && fechaValida) {
           console.log("se confirmo el reporte");
           gestor.tomarConfirmacionReporte(); // 17. tomarConfirmacionReporte()
         }
 
 
-  }, [fechaInicio, fechaFin, tipoReporte,formaVisualizacionReporte, confirmacionReporte]);
+  }, [fechaInicio, fechaFin, tipoReporteSeleccionado,formaVisualizacionReporte, confirmacionReporte]);
 
 
   return (
     <>
       <Header />
       {pantalla && gestor && ( // Verificamos que el gestor esté definido
+      
         <div className='container ms-lg-5 mt-5 '>
+
           <div className="row-4 ">
             <div className='col-md-9 col-sm-12 ' >
               <div className="card text-bg-dark text-center">
@@ -137,6 +159,8 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
                   {habilitarConfirmacion && <ComponentBotonConfirmacion onConfirmacionReporte={tomarConfirmacionReporte}/>} {/* Pasamos el método del gestor como prop */}
                 </div>
               </div>
+              {showAlert && <AlertOnScreen showAlert={showAlert} setShowAlert={setShowAlert} />}
+              
             </div>
           </div>
         </div>
