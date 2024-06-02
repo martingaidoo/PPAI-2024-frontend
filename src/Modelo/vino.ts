@@ -9,14 +9,16 @@ export class Vino {
     bodega: Bodega;
     precio: number;
     reseñas: Reseña[];
+    calificacionGeneral: number;
 
-    constructor(nombre: string, varietal: Varietal[], año: number, bodega: Bodega, precio: number, reseñas: Reseña[]) {
+    constructor(nombre: string, varietal: Varietal[], año: number, bodega: Bodega, precio: number, reseñas: Reseña[], calificacionGeneral: number) {
         this.nombre = nombre;
         this.varietal = varietal;
         this.año = año;
         this.bodega = bodega;
         this.precio = precio;
         this.reseñas = reseñas;
+        this.calificacionGeneral = calificacionGeneral;
     }
 
     getNombre(): string {
@@ -86,5 +88,9 @@ export class Vino {
 
     agregarReseña(reseña: Reseña): void {
         this.reseñas.push(reseña);
+    }
+
+    getCalificacionGeneral(): number{
+        return this.calificacionGeneral;
     }
 }

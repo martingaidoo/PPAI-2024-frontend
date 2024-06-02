@@ -6,9 +6,9 @@ interface ComponentTipoReseñaProps {
 
 export const ComponentTipoReseña: React.FC<ComponentTipoReseñaProps> = ({ onTipoReseñaChange }) => {
     const [tipoReseña, setTipoReseña] = useState<string>();
-    const opcioenReseñas = ["Normal", "De amigos", "sommelier"];
+    const opcionesReseñas = ["Normal", "De amigos", "sommelier"];
 
-    const handleTipoReseñaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const TipoReseñaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const reseña = event.target.value;
         setTipoReseña(reseña);
         onTipoReseñaChange(reseña);
@@ -20,9 +20,9 @@ export const ComponentTipoReseña: React.FC<ComponentTipoReseñaProps> = ({ onTi
                 <div className="row">
                     <div className='col-md-6 mx-auto'>
                         <h5>Seleccione el tipo de Reseña</h5>
-                        <select className="form-control bg-black text-white" onChange={handleTipoReseñaChange}>
+                        <select className="form-control bg-black text-white" onChange={TipoReseñaChange}>
                             <option value="">Selecciona una opción</option>
-                            {opcioenReseñas.map((opcion, index) => (
+                            {opcionesReseñas.map((opcion, index) => (
                                 <option key={index} value={opcion}>{opcion}</option>
                             ))}
                         </select>

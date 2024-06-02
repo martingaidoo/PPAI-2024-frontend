@@ -1,9 +1,6 @@
 import React from "react"
 import { Main } from "../Controlador/Main"
 export const Header = () => {
-  const main = new Main()
-  const pantallaGenerarReporteRankingVino = main.getPantallaGenerarReporteRankingVino()
-
   return (
 <>
 <nav className="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">

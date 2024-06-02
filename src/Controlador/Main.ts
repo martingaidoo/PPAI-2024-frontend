@@ -8,7 +8,6 @@ import { Provincia } from '../Modelo/provincia';
 import { Reseña } from '../Modelo/reseña';
 
 export class Main {
-    //gestorGenerarReporteRankingVino: GestorGenerarReporteRankingVino;
     vino1: Vino;
     vino2: Vino;
     bodega: Bodega;
@@ -31,6 +30,8 @@ export class Main {
 
         //instanciamos los paises
         this.pais = new Pais('Argentina');
+        const pais2 = new Pais('Chile');
+        const pais3 = new Pais('España');
 
         //instanciamos las provincias
         this.provincia = new Provincia('Mendoza', this.pais);
@@ -57,30 +58,11 @@ export class Main {
         this.varietal3 = new Varietal('Merlot', 40);
 
         //instanciamos los vinos
-        this.vino1 = new Vino("Vino malbec", [this.varietal1], 2024, this.bodega, 1000, [this.reseña1, this.reseña2, this.reseña3, this.reseña4]);
-        this.vino2 = new Vino("Vino cabernet", [this.varietal2, this.varietal3], 2024, this.bodega, 1200, [this.reseña5, this.reseña6, this.reseña7, this.reseña8]);
-
-        //this.gestorGenerarReporteRankingVino = new GestorGenerarReporteRankingVino([this.vino1, this.vino2]);
+        this.vino1 = new Vino("Vino malbec", [this.varietal1], 2024, this.bodega, 1000, [this.reseña1, this.reseña2, this.reseña3, this.reseña4], 4.25);
+        this.vino2 = new Vino("Vino cabernet", [this.varietal2, this.varietal3], 2024, this.bodega, 1200, [this.reseña5, this.reseña6, this.reseña7, this.reseña8], 3);
                 
     }
-    generarReporte(){
-        console.log("entre")
-        //const validarFecha = this.gestorGenerarReporteRankingVino.validarFechas(new Date('2024-02-15'), new Date('2024-06-1'));
-        //console.log("las fechas son validas", validarFecha);
-        //const vinosFiltrados = this.gestorGenerarReporteRankingVino.buscarVinosConReseñasPorTipoYFecha(new Date('2024-02-15'), new Date('2024-06-1'), [this.vino1, this.vino2]);
-        //console.log("Los vinos filtrados",vinosFiltrados);
-        //const vinosCalificados =this.gestorGenerarReporteRankingVino.calcularCalificacionPromedio(vinosFiltrados);
-        //console.log("los vinos calificados", vinosCalificados);
-        //const primeros10VinosCalificados = this.gestorGenerarReporteRankingVino.tomar10PrimerosVinosCalificados(vinosCalificados);
-        //console.log("los 10 primeros vinos calificados", primeros10VinosCalificados);
-        //const datosDeLos10MejoresVinos = this.gestorGenerarReporteRankingVino.buscarDatos10MejoresVinos(primeros10VinosCalificados);
-        //console.log("los datos de los 10 mejores vinos", datosDeLos10MejoresVinos);
-    }
-
-    getPantallaGenerarReporteRankingVino(){
-     //   return this.pantallaGenerarReporteRankingVino;
-    }
-
+    
     getVinos(){
         return [this.vino1, this.vino2];
     }

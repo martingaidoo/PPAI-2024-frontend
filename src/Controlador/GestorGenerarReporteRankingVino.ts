@@ -1,23 +1,26 @@
 import { Vino } from '../Modelo/vino';
+import {GeneradorArchivoExcel} from '../Interfaz/GeneradorArchivoExcel';
+
 interface PantallaGenerarReporte {
     solicitarSeleccionFechasInicioFin: () => void;
-    mostrarTipoReseña: () => void;
+    mostrarTipoReporte: () => void;
     solicitarFormaVisualizacionReporte: () => void;
     solicitarConfirmacionReporte: () => void;
-  }
+}
 
 export class GestorGenerarReporteRankingVino {
     pantalla: any;
     fechaInicio: Date;
     fechaFin: Date;
     tiposReportes: string[];
-    tipoReseñaSeleccionada: string;
+    tipoReporteSeleccionado: string;
     tipoVisualizacion: string[];
     tipoVisualizacionSeleccionada: string;
     confirmacionReporte: boolean;
-    vinosFiltradosPorReseña: Vino[];
+    vinosFiltradosPorReseña: any[];
     vinosFiltradosPorReseñaConPromedio: any[];
     vinosRankeados: any[];
+    vinosRanking10: any[];
     datosVinosRankeados: any;
     vinos: Vino[];
     solicitarSeleccionFechasInicioFin: () => void;
@@ -30,13 +33,14 @@ export class GestorGenerarReporteRankingVino {
         this.fechaInicio = new Date();
         this.fechaFin = new Date();
         this.tiposReportes = ["Reseñas normales", "Reseñas de Sommelier", "Reseñas de Amigos"];
-        this.tipoReseñaSeleccionada = "";
+        this.tipoReporteSeleccionado = "";
         this.tipoVisualizacion = ["Excel", "PDF", "Pantalla"];
         this.tipoVisualizacionSeleccionada = "";
         this.confirmacionReporte = false;
         this.vinosFiltradosPorReseña = [];
         this.vinosFiltradosPorReseñaConPromedio = [];
         this.vinosRankeados = [];
+        this.vinosRanking10 = [];
         this.datosVinosRankeados = {};
         this.vinos = vinos;
         this.solicitarSeleccionFechasInicioFin = solicitarSeleccionFechasInicioFin;
@@ -47,38 +51,43 @@ export class GestorGenerarReporteRankingVino {
         
     }
 
-    opcionGenerarRankingDeVinos(): void {
-        this.solicitarSeleccionFechasInicioFin();
+    opcionGenerarRankingDeVinos(): void {//3. opcionGenerarRankingDeVinos()
+        this.solicitarSeleccionFechasInicioFin();//4. solitarSeleccionFechasInicioFin()
     }
 
-    tomarSeleccionFechaInicioFin(fechaInicio: Date, fechaFin: Date): boolean {
-        if (this.validarFechas(fechaInicio, fechaFin)){
+    tomarSeleccionFechaInicioFin(fechaInicio: Date, fechaFin: Date): boolean { // 7.tomarSeleccionFechasInicioFin()
+        if (this.validarFechas(fechaInicio, fechaFin)){//8. validarFechas()
             this.setFechaInicio(fechaInicio)
             this.setFechaFin(fechaFin)
-            this.mostrarTipoReseña(); //llama a la funcion mostrarTipoReseña de la pantalla
+            this.mostrarTipoReseña(); //9. mostrarTipoReseña()
             return true;
         }
         return false;
     }
 
-    tomarSeleccionTipoReseña(tipoReseña : string): void {
-        this.setTipoReseñaSeleccionada(tipoReseña);
-        this.solicitarFormaVisualizacionReporte();
+    tomarSeleccionTipoReporte(tipoReporte : string): void {//11. tomarSeleccionTipoReseña()
+        this.setTipoReporteSeleccionado(tipoReporte);
+        this.solicitarFormaVisualizacionReporte();//13.solicitarFormaVisualizacionReporte()
     }
 
-    tomarFormaVisualizacionReporte(formaVisualizacionReporte: string): void {
-        this.setTipoVisualizacionSeleccionada(formaVisualizacionReporte);
-        this.solicitarConfirmacionReporte();
+    tomarFormaVisualizacionReporte(formaVisualizacionReporte: string): void {// 14. tomarFormaVisualizacionReporte()
+        this.setTipoVisualizacionSeleccionada(formaVisualizacionReporte); 
+        this.solicitarConfirmacionReporte(); //15. solicitarConfirmacionReporte()
     }
 
-    tomarConfirmacionReporte(): void {
-        console.log("Reporte confirmadoooooooooooooooo.");
-        const vinosFiltradosPorReseña= this.buscarVinosConReseñasPorTipoYEnFecha(this.fechaInicio, this.fechaFin, this.vinos);
-        const vinosCalificados = this.calcularCalificacionPromedio(vinosFiltradosPorReseña);
-        const primeros10VinosCalificados = this.tomar10PrimerosVinosCalificados(vinosCalificados);
-        const datosDeLos10MejoresVinos = this.buscarDatos10MejoresVinos(primeros10VinosCalificados);
-        console.log(datosDeLos10MejoresVinos);
+    tomarConfirmacionReporte(): void {//17. tomarConfirmacionReporte()
+        const vinosFiltradosPorReseña = this.buscarVinosConReseñasPorTipoYEnFecha(this.fechaInicio, this.fechaFin, this.vinos);
+        console.log("vinos filtrados por reseña:",vinosFiltradosPorReseña)
+        const vinosFiltradosPorReseñaConPromedio = this.calcularCalificacionPromedio(vinosFiltradosPorReseña);
+        console.log("vinos filtrados por reseña con promedio", vinosFiltradosPorReseñaConPromedio)
+        const vinosRakeados = this.ordenarVinosPorRanking(vinosFiltradosPorReseñaConPromedio)
+        console.log("vinos filtrados por reseña con promedio ordenados", vinosRakeados)
+        const vinosRanking10 = this.tomar10PrimerosVinosCalificados(vinosRakeados);
+        console.log("primeros 10 VinosCalificados", vinosRanking10)
+        const datosVinosRankeados = this.buscarDatos10MejoresVinos(vinosRanking10);
+        console.log("datos vinos rankeados",datosVinosRankeados);
 
+        this.generarArchivoExcel(datosVinosRankeados);
     }
 
     validarFechas(fechaInicio: Date, fechaFin: Date): boolean {
@@ -114,13 +123,20 @@ export class GestorGenerarReporteRankingVino {
     }
 
     buscarDatos10MejoresVinos(vinosRankeados: [Vino, number][]){
-        const datosVinosRankeados = vinosRankeados.map(([vino]) => ({
+        const datosVinosRankeados = vinosRankeados.map(([vino, number]) => ({
             nombreVino: vino.getNombre(),
+            calificacionSomelier: number,
+            calificacionGeneral: vino.getCalificacionGeneral(),
             varietales: vino.obtenerVarietal(),
             precioVino: vino.getPrecio(),
             bodega: vino.obtenerBodega(),
         }));
         return datosVinosRankeados;
+    }
+
+    generarArchivoExcel(datosVinosRankeados: any[]){
+        const generadorArchivoExel = new GeneradorArchivoExcel();
+        generadorArchivoExel.generarArchivo(datosVinosRankeados)
     }
 
     generarArchivo(): boolean {
@@ -131,8 +147,8 @@ export class GestorGenerarReporteRankingVino {
         return this.tiposReportes;
     }
 
-    setTipoReseñaSeleccionada(tipoReseña: string): void {
-        this.tipoReseñaSeleccionada = tipoReseña;
+    setTipoReporteSeleccionado(tipoReseña: string): void {
+        this.tipoReporteSeleccionado = tipoReseña;
     }
 
     setTipoVisualizacionSeleccionada(tipoVisualizacionSeleccionada: string){
