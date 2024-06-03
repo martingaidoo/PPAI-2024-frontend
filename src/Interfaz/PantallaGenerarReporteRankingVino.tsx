@@ -7,9 +7,6 @@ import { Header } from '../components/Header';
 import { Main } from '../Controlador/Main';
 import { GestorGenerarReporteRankingVino } from '../Controlador/GestorGenerarReporteRankingVino'; // Importamos el gestor
 import AlertOnScreen from '../components/ComponentToast';
-import { List } from 'reactstrap';
-
-
 
 export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [gestor, setGestor] = useState<GestorGenerarReporteRankingVino | null>(null); // Estado para el gestor
@@ -25,19 +22,22 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [confirmacionReporte, setConfirmacionReporte] = useState<boolean>(false);
   let fechaValida: boolean = false;
   const [showAlert, setShowAlert] = useState(false); // Agrega este estado para mostrar la alerta de fecha invalida
-
-  //const [tipoReporte, setTipoReporte] = useState<List>();
-
   
-  const tomarSeleccionFechaInicio = (fecha:Date) => {//5. tomarSeleccionFechaInicio()
-    setFechaInicio(fecha);
+  const opcionGenerarRankingDeVinos = () => { //1. opcionGenerarRankingDeVinos()
+
+    useEffect(() => {
+      // Creamos una instancia del gestor cuando se selecciona la opcionGenerarRankingDeVinos
+      const main = new Main();
+      const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, mostrarYSolicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte); // Pasamos los vinos al gestor
+      setGestor(gestor);
+  
+      habilitarPantalla() // 2. habilitarPantalla()
+  
+      gestor.opcionGenerarRankingDeVinos(); // 3.opcionGenerarRankingDeVinos()
+    }, []);
   }
 
-  const tomarSeleccionFechaFin = (fecha:Date) => { //6. tomarSeleccionFechaFin()
-    setFechaFin(fecha);
-  }
-
-  const habilitarPantalla = () => {
+  const habilitarPantalla = () => {//2. habilitarPantalla()
     setPantalla(true);
   }
 
@@ -45,60 +45,12 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     setHabilitarTomarFechas(true);
   }
 
-  const mostrarYSolicitarTipoReporte = () => {// 9. mostrarYSeleccionarTipoReporte()
-    setHabilitarTipoReporte(true);
-  }
-
-  const tomarSeleccionTipoReporte = (reseña:string) =>{ //10. tomarSeleccionTipoReporte()
-    setTipoReporteSeleccionado(reseña);
-  }
-
-  const solicitarFormaVisualizacionReporte = () => {//12. solicitarFormaVisualizacionReporte()
-    setHabilitarFormaVisualizacion(true);
-  }
-
-  const tomarFormaVisualizacionReporte = (formaVisualizacionReporte: string) => { //13. tomarFormaVisualizacionReporte()
-    setFormaVisualizacionReporte(formaVisualizacionReporte);
-  }
-
-  const solicitarConfirmacionReporte = () => { //14. solicitarConfirmacionReporte()
-    setHabilitarConfirmacion(true);
-  }
-
-  const tomarConfirmacionReporte = () => { //16. tomarConfirmacionReporte()
-    setConfirmacionReporte(true);
-  }
-
- // main.ts
-
-// Función para mostrar la alerta de confirmación y generar el archivo
-const mostrarConfirmacionGeneracionReporte = () => {
-  alert('Reporte generado exitosamente');
-  finCU();
-  
-}
-
-const finCU = () => {
-
-  // Cambia la ruta a la que quieras, por ejemplo '/nueva-ruta'
-  window.location.href = '/'; // Redirige a la ruta raíz
-
-}
-  
-  useEffect(() => {
-    // Creamos una instancia del gestor cuando se monta el componente
-    const main = new Main();
-    const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, solicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte); // Pasamos los vinos al gestor
-    setGestor(gestor);
-
-    habilitarPantalla() // 2. habilitarPantalla()
+  const tomarSeleccionFechaInicio = (fecha:Date) => {//5. tomarSeleccionFechaInicio()
+    setFechaInicio(fecha);
     
-    gestor.opcionGenerarRankingDeVinos(); // 3.opcionGenerarRankingDeVinos()
-
-    //tomarFechasInicioFin();
-    if (fechaInicio && fechaFin)
+    if (fecha && fechaFin && gestor)
       {
-        fechaValida = gestor.tomarSeleccionFechaInicioFin(fechaInicio, fechaFin) // 7.tomarSeleccionFechaInicioFin()
+        fechaValida = gestor.tomarSeleccionFechaInicioFin(fecha, fechaFin) // 7.tomarSeleccionFechaInicioFin()
         if (!fechaValida) // Llamamos al método del gestor
         {
           setHabilitarTipoReporte(false)
@@ -107,35 +59,78 @@ const finCU = () => {
           setTipoReporteSeleccionado("sin seleccion")
           setFormaVisualizacionReporte("sin seleccion")
           setShowAlert(true); // Muestra la alerta de fecha inválida
-          
         }
       }
-
-      //tomarTipoReseña();
-        if (tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!=="" && fechaValida) {
-          gestor.tomarSeleccionTipoReporte(tipoReporteSeleccionado); // 11. tomarSeleccionTipoReseña()
-        }
-        else{
+  }
+  
+  const tomarSeleccionFechaFin = (fecha:Date) => { //6. tomarSeleccionFechaFin()
+    setFechaFin(fecha);
+    if (fechaInicio && fecha && gestor)
+      {
+        fechaValida = gestor.tomarSeleccionFechaInicioFin(fechaInicio, fecha) // 7.tomarSeleccionFechaInicioFin()
+        if (!fechaValida) // Llamamos al método del gestor
+        {
+          setHabilitarTipoReporte(false)
           setHabilitarFormaVisualizacion(false)
           setHabilitarConfirmacion(false)
+          setTipoReporteSeleccionado("sin seleccion")
           setFormaVisualizacionReporte("sin seleccion")
+          setShowAlert(true); // Muestra la alerta de fecha inválida
         }
+      }
+  }
 
-        if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!== ""&& fechaValida) {
-          gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // 
-        }
-        else{
-          setHabilitarConfirmacion(false)
-        }
+  const mostrarYSolicitarTipoReporte = () => {// 9. mostrarYSeleccionarTipoReporte()
+    setHabilitarTipoReporte(true);
+  }
 
-        if (confirmacionReporte && formaVisualizacionReporte !== "sin seleccion" && tipoReporteSeleccionado !== "sin seleccion" && fechaValida) {
-          console.log("se confirmo el reporte");
-          gestor.tomarConfirmacionReporte(); // 17. tomarConfirmacionReporte()
-        }
+  const tomarSeleccionTipoReporte = (reseña:string) =>{ //10. tomarSeleccionTipoReporte()
+    setTipoReporteSeleccionado(reseña);
+    if (reseña !== "sin seleccion" && reseña!=="" && gestor) {
+      gestor.tomarSeleccionTipoReporte(tipoReporteSeleccionado); // 11. tomarSeleccionTipoReseña()
+    }
+    else{
+      setHabilitarFormaVisualizacion(false)
+      setHabilitarConfirmacion(false)
+      setFormaVisualizacionReporte("sin seleccion")
+    }
+  }
 
+  const mostrarYSolicitarFormaVisualizacionReporte = () => {//12. mostrarYSolicitarFormaVisualizacionReporte()
+    setHabilitarFormaVisualizacion(true);
+  }
 
-  }, [fechaInicio, fechaFin, tipoReporteSeleccionado,formaVisualizacionReporte, confirmacionReporte]);
+  const tomarFormaVisualizacionReporte = (formaVisualizacionReporte: string) => { //13. tomarFormaVisualizacionReporte()
+    setFormaVisualizacionReporte(formaVisualizacionReporte);
+    if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!== "" && gestor) {
+      gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // 14. tomarFormaVisualizacionReporte()
+    }
+    else{
+      setHabilitarConfirmacion(false)
+    }
+  }
 
+  const solicitarConfirmacionReporte = () => { //15. solicitarConfirmacionReporte()
+    setHabilitarConfirmacion(true);
+  }
+
+  const tomarConfirmacionReporte = () => { //16. tomarConfirmacionReporte()
+    setConfirmacionReporte(true);
+    if (gestor) {
+      gestor.tomarConfirmacionReporte(); // 17. tomarConfirmacionReporte()
+    }
+  }
+
+  const mostrarConfirmacionGeneracionReporte = () => {//45. mostrarConfirmacionGeneracionReporte()
+    alert('Reporte generado exitosamente');
+    finCU();
+  }
+
+  const finCU = () => { // 46.finCU()
+    window.location.href = '/'; // Redirige a la ruta raíz
+  }
+  
+  opcionGenerarRankingDeVinos(); // 1. opcionGenerarRankingDeVinos(
 
   return (
     <>
