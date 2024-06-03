@@ -11,7 +11,7 @@ export class RegionVitivinicola {
         this.provincia = provincia;
     }
 
-    getNombre(): string {
+    getNombre(): string { // 33. getNombre
         return this.nombre;
     }
 
@@ -27,7 +27,7 @@ export class RegionVitivinicola {
         this.descripcion = descripcion;
     }
 
-    obtenerProvincia(): string[] {
+    obtenerProvincia(): string[] { //34. obtenerProvincia
         const nombreProvincia = this.provincia.getNombre();
         const nombrePais = this.provincia.obtenerPais().getNombre();
         return [nombreProvincia, nombrePais];

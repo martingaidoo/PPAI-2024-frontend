@@ -9,7 +9,7 @@ export class Pais {
         this.provincia = [];
     }
 
-    getNombre(): string {
+    getNombre(): string { //37. getNombre()
         return this.nombre;
     }
 

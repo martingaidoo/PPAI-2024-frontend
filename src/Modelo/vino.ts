@@ -5,25 +5,25 @@ import { Varietal } from './varietal';
 export class Vino {
     nombre: string;
     varietal: Varietal[];
-    año: number;
+    añada: number;
     bodega: Bodega;
-    precio: number;
-    reseñas: Reseña[];
+    precioARS: number;
+    reseña: Reseña[];
     calificacionGeneral: number;
 
     constructor(nombre: string, varietal: Varietal[], año: number, bodega: Bodega, precio: number, reseñas: Reseña[], calificacionGeneral: number) {
         this.nombre = nombre;
         this.varietal = varietal;
-        this.año = año;
+        this.añada = año;
         this.bodega = bodega;
-        this.precio = precio;
-        this.reseñas = reseñas;
+        this.precioARS = precio;
+        this.reseña = reseñas;
         this.calificacionGeneral = calificacionGeneral;
     }
 
     obtenerReseñas(fechaInicio: Date, fechaFin: Date): boolean {// 19.obtenerReseñas()
         let bandera = false;
-        for (let reseña of this.reseñas) {
+        for (let reseña of this.reseña) {
             if (reseña.estaEnPeriodo(fechaInicio, fechaFin) && reseña.sosDeSommelier()) { // 20.estaEnPeriodo() 21.sosDeSommelier()
                 bandera = true;
             }
@@ -34,7 +34,7 @@ export class Vino {
     calcularRanking(fechaInicio:Date, fechaFin:Date): number { // 23.calcularRanking()
         let puntaje = 0;
         let reseñas = 0;
-        for (let reseña of this.reseñas) {
+        for (let reseña of this.reseña) {
             if (reseña.estaEnPeriodo(fechaInicio, fechaFin) && reseña.sosDeSommelier() ){ //24.estaEnPeriodo()  25.sosDeSommelier() 26.getPuntaje()
                 puntaje += reseña.getPuntaje();
                 reseñas++;
@@ -60,25 +60,22 @@ export class Vino {
     }
 
 
-    getPrecio(): number {//40.getPrecioVino()
-        return this.precio;
+    getPrecioARS(): number {//40. getPrecioARS()
+        return this.precioARS;
     }
 
 
-    getNombre(): string { // 41.getNombre()
+    getNombre(): string { // 41. getNombre()
         return this.nombre;
     }
 
-    getCalificacionGeneral(): number{ //42.getCalificacionGeneral()
+    getCalificacionGeneral(): number{ //42. getCalificacionGeneral()
         return this.calificacionGeneral;
     }
 
-
-
-
-    
+ 
     getAño(): number {
-        return this.año;
+        return this.añada;
     }
 
     setNombre(nombre: string): void {
@@ -90,19 +87,19 @@ export class Vino {
     }
 
     setAño(año: number): void {
-        this.año = año;
+        this.añada = año;
     }
 
     setBodega(bodega: Bodega): void {
         this.bodega = bodega;
     }
 
-    setPrecio(precio: number): void {
-        this.precio = precio;
+    setPrecioARS(precio: number): void {
+        this.precioARS = precio;
     }
 
     agregarReseña(reseña: Reseña): void {
-        this.reseñas.push(reseña);
+        this.reseña.push(reseña);
     }
 
 

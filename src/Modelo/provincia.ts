@@ -12,11 +12,11 @@ export class Provincia {
         this.region = [];
     }
 
-    getNombre(): string {
+    getNombre(): string { //35. getNombre()
         return this.nombre;
     }
 
-    obtenerPais(): Pais {
+    obtenerPais(): Pais { //36. obtenerPais()
         return this.pais;
     }
 

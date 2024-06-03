@@ -17,7 +17,7 @@ export class Bodega {
         this.regionVitivinicola = regionVitivinicola;
     }
 
-    getNombre(): string {
+    getNombre(): string { // 31. getNombre()
         return this.nombre;
     }
 
@@ -29,7 +29,7 @@ export class Bodega {
         return this.historia;
     }
 
-    obtenerUbicacion(): string[] {
+    obtenerUbicacion(): string[] { // 32. obtenerUbicacion()
         const nombreRegionVitivinicola = this.regionVitivinicola.getNombre();
         const [provincia, pais] = this.regionVitivinicola.obtenerProvincia();
         return [nombreRegionVitivinicola, provincia, pais];

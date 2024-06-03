@@ -23,7 +23,7 @@ export class Reseña {
         return this.fechaReseña;
     }
 
-    getPuntaje(): number {
+    getPuntaje(): number { //26. getPuntaje()
         return this.puntaje;
     }
 
@@ -43,11 +43,11 @@ export class Reseña {
         this.puntaje = puntaje;
     }
 
-    estaEnPeriodo(fechaInicio: Date, fechaFin: Date): boolean {
+    estaEnPeriodo(fechaInicio: Date, fechaFin: Date): boolean { //20. y 24. estaEnPeriodo()
         return this.fechaReseña >= fechaInicio && this.fechaReseña <= fechaFin;
     }
 
-    sosDeSommelier(): boolean {
+    sosDeSommelier(): boolean { //21. y 25. sosDeSommelier()
         return this.esDeSommelier;
     }
 }

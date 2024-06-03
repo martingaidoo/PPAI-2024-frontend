@@ -19,7 +19,7 @@ interface Vino {
 export class GeneradorArchivoExcel {
     constructor() {}
 
-    generarArchivo(datos: Vino[]) {
+    generarArchivo(datos: Vino[]) { //44. generarArchivo()
         // Ordenar los datos por calificación de sommelier en orden descendente y tomar los 10 mejores
         const top10Vinos = datos.sort((a, b) => b.calificacionSommelier - a.calificacionSommelier).slice(0, 10);
 

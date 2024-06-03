@@ -7,7 +7,7 @@ export class Varietal {
         this.porcentajeComposicion = porcentajeComposicion;
     }
 
-    getDescripcion(): string {
+    getDescripcion(): string { // 39. getDescripcion()
         return this.descripcion;
     }
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 interface ComponenteTomarFormaVisualizacionReporteProps {
+  tipoVisualizacion: string[];
   onFormaVisualizacionReporte: (formaVisualizacion: string) => void;
 }
 
-export const ComponenteTomarFormaVisualizacionReporte: React.FC<ComponenteTomarFormaVisualizacionReporteProps> = ({ onFormaVisualizacionReporte }) => {
+export const ComponenteTomarFormaVisualizacionReporte: React.FC<ComponenteTomarFormaVisualizacionReporteProps> = ({ tipoVisualizacion, onFormaVisualizacionReporte }) => {
   const [formaVisualizacionReporte, setFormaVisualizacionReporte] = useState<string>();
-  const opcioenVisualizacion = ["PDF", "Excel", "Pantalla"];
 
   const tomarFormaVisualizacionReporte = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const formaVisualizacion = event.target.value;
@@ -23,7 +23,7 @@ export const ComponenteTomarFormaVisualizacionReporte: React.FC<ComponenteTomarF
             <h5>Seleccione la forma de visualizacion</h5>
             <select className="form-control bg-black text-white" onChange={tomarFormaVisualizacionReporte}>
               <option value="">Selecciona una opción</option>
-              {opcioenVisualizacion.map((opcion, index) => (
+              {tipoVisualizacion.map((opcion, index) => (
                 <option key={index} value={opcion}>{opcion}</option>
               ))}
             </select>

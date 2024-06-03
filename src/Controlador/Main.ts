@@ -229,4 +229,11 @@ export class Main {
     getVinos(){
         return [this.vino1, this.vino2, this.vino3,this.vino4, this.vino5, this.vino6, this.vino7, this.vino8, this.vino9, this.vino10, this.vino11, this.vino12, this.vino13, this.vino14, this.vino15, this.vino16, this.vino17, this.vino18, this.vino19, this.vino20];
     }
+
+    traerGestorConDatos(solicitarSeleccionFechasInicioFin: any, mostrarYSolicitarTipoReporte: any, mostrarYSolicitarFormaVisualizacionReporte: any, solicitarConfirmacionReporte: any, mostrarConfirmacionGeneracionReporte: any){
+        return new GestorGenerarReporteRankingVino(this.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, mostrarYSolicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte);
+    }
 }
+
+const main = new Main();
+export {main }

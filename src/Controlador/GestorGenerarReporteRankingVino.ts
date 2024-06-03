@@ -1,13 +1,14 @@
 import { Vino } from '../Modelo/vino';
 import {GeneradorArchivoExcel} from '../Interfaz/GeneradorArchivoExcel';
 import {generadorArchivoExcel} from '../Interfaz/GeneradorArchivoExcel';
+import { PantallaGenerarReporteRankingVino } from '../Interfaz/PantallaGenerarReporteRankingVino';
 
 interface PantallaGenerarReporte {
-    solicitarSeleccionFechasInicioFin: () => void; //son motodos de la pantalla
-    mostrarYSolicitarTipoReporte: () => void; //son motodos de la pantalla
-    mostrarYSolicitarFormaVisualizacionReporte: () => void; //son motodos de la pantalla
-    solicitarConfirmacionReporte: () => void; //son motodos de la pantalla
-    mostrarConfirmacionGeneracionReporte: () => void; //son motodos de la pantalla
+    solicitarSeleccionFechasInicioFin: () => void; //son metodos de la pantalla
+    mostrarYSolicitarTipoReporte: (reportes:string[]) => void; //son metodos de la pantalla
+    mostrarYSolicitarFormaVisualizacionReporte: (tiposVisualizacion: string[]) => void; //son metodos de la pantalla
+    solicitarConfirmacionReporte: () => void; //son metodos de la pantalla
+    mostrarConfirmacionGeneracionReporte: () => void; //son metodos de la pantalla
 }
 
 export class GestorGenerarReporteRankingVino {
@@ -27,13 +28,13 @@ export class GestorGenerarReporteRankingVino {
     vinos: Vino[];
     
     solicitarSeleccionFechasInicioFin: () => void; //son metodos de la pantalla
-    mostrarYSolicitarTipoReporte: () => void; //son metodos de la pantalla
-    mostrarYSolicitarFormaVisualizacionReporte: () => void; //son metodos de la pantalla
+    mostrarYSolicitarTipoReporte: (reportes: string[]) => void; //son metodos de la pantalla
+    mostrarYSolicitarFormaVisualizacionReporte: (tiposVisualizacion: string[]) => void; //son metodos de la pantalla
     solicitarConfirmacionReporte: () => void; //son metodos de la pantalla
     mostrarConfirmacionGeneracionReporte: () => void;//son metodos de la pantalla
 
 
-    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarYSolicitarTipoReporte: () => void,mostrarYSolicitarFormaVisualizacionReporte: () => void,solicitarConfirmacionReporte: () => void,mostrarConfirmacionGeneracionReporte: () =>void, pantalla: PantallaGenerarReporte | null = null) {
+    constructor(vinos: Vino[], solicitarSeleccionFechasInicioFin: () => void,mostrarYSolicitarTipoReporte: (reportes: string[]) => void,mostrarYSolicitarFormaVisualizacionReporte: (tiposVisualizacion: string[]) => void,solicitarConfirmacionReporte: () => void,mostrarConfirmacionGeneracionReporte: () =>void, pantalla: PantallaGenerarReporte | null = null) {
         this.fechaInicio = new Date();
         this.fechaFin = new Date();
         this.tiposReportes = ["Reseñas normales", "Reseñas de Sommelier", "Reseñas de Amigos"];
@@ -47,6 +48,7 @@ export class GestorGenerarReporteRankingVino {
         this.vinosRanking10 = [];
         this.datosVinosRankeados = {};
         this.vinos = vinos;
+        //Metodos de la pantalla
         this.solicitarSeleccionFechasInicioFin = solicitarSeleccionFechasInicioFin;
         this.mostrarYSolicitarTipoReporte = mostrarYSolicitarTipoReporte;
         this.mostrarYSolicitarFormaVisualizacionReporte = mostrarYSolicitarFormaVisualizacionReporte;
@@ -58,13 +60,15 @@ export class GestorGenerarReporteRankingVino {
 
     opcionGenerarRankingDeVinos(): void {//3. opcionGenerarRankingDeVinos()
         this.solicitarSeleccionFechasInicioFin();//4. solitarSeleccionFechasInicioFin() metodo de la pantalla
+        this.mostrarYSolicitarTipoReporte(this.tiposReportes); //9. mostrarTipoReseña() metodo de la pantalla
+        this.mostrarYSolicitarFormaVisualizacionReporte(this.tipoVisualizacion);//12.mostrarYSolicitarFormaVisualizacionReporte() metodo de la pantalla
+        this.solicitarConfirmacionReporte(); //15. solicitarConfirmacionReporte() metodo de la pantalla
     }
 
-    tomarSeleccionFechaInicioFin(fechaInicio: Date, fechaFin: Date): boolean { // 7.tomarSeleccionFechasInicioFin()
+    tomarSeleccionFechasInicioFin(fechaInicio: Date, fechaFin: Date): boolean { // 7.tomarSeleccionFechasInicioFin()
         if (this.validarFechas(fechaInicio, fechaFin)){//8. validarFechas()
             this.setFechaInicio(fechaInicio)
             this.setFechaFin(fechaFin)
-            this.mostrarYSolicitarTipoReporte(); //9. mostrarTipoReseña() metodo de la pantalla
             return true;
         }
         return false;
@@ -72,12 +76,10 @@ export class GestorGenerarReporteRankingVino {
 
     tomarSeleccionTipoReporte(tipoReporte : string): void {//11. tomarSeleccionTipoReseña()
         this.setTipoReporteSeleccionado(tipoReporte);
-        this.mostrarYSolicitarFormaVisualizacionReporte();//12.mostrarYSolicitarFormaVisualizacionReporte() metodo de la pantalla
     }
 
     tomarFormaVisualizacionReporte(formaVisualizacionReporte: string): void {// 14. tomarFormaVisualizacionReporte()
         this.setTipoVisualizacionSeleccionada(formaVisualizacionReporte); 
-        this.solicitarConfirmacionReporte(); //15. solicitarConfirmacionReporte() metodo de la pantalla
     }
 
     tomarConfirmacionReporte(): void {//17. tomarConfirmacionReporte()
@@ -95,7 +97,7 @@ export class GestorGenerarReporteRankingVino {
         return fechaInicio < fechaFin;
     }
 
-    buscarVinosConReseñasPorTipoYEnFecha(fechaInicio: Date, fechaFin: Date, vinos: Vino[]): Vino[] {
+    buscarVinosConReseñasPorTipoYEnFecha(fechaInicio: Date, fechaFin: Date, vinos: Vino[]): Vino[] { // 18. buscarVinosConReseñasPorTipoYEnFecha  
         const vinosFiltradosPorReseña: Vino[] = [];
         for (let vino of vinos) {
             const estaEnPeriodoYEsSomelier = vino.obtenerReseñas(fechaInicio, fechaFin); // 19.obtenerReseñas()
@@ -119,28 +121,26 @@ export class GestorGenerarReporteRankingVino {
         return vinosFiltradosPorReseñaConPromedio.sort((a, b) => b[1] - a[1]);
     }
 
-    tomar10PrimerosVinosCalificados(vinosFiltradosPorReseñaConPromedio: [Vino, number][]): [Vino, number][] { //28.tomar10PrimerosVinosCalificados()
-        return vinosFiltradosPorReseñaConPromedio.slice(0, 10);
+    tomar10PrimerosVinosCalificados(vinosRakeados: [Vino, number][]): [Vino, number][] { //28.tomar10PrimerosVinosCalificados()
+        return vinosRakeados.slice(0, 10);
     }
 
-    buscarDatos10MejoresVinos(vinosRankeados: [Vino, number][]){ //29.buscarDatos10MejoresVinos()
-        const datosVinosRankeados = vinosRankeados.map(([vino, number]) => ({
+    buscarDatos10MejoresVinos(vinosRanking10: [Vino, number][]){ //29.buscarDatos10MejoresVinos()
+        const datosVinosRankeados = vinosRanking10.map(([vino, number]) => ({
             nombreVino: vino.getNombre(),
             calificacionSomelier: number,
             calificacionGeneral: vino.getCalificacionGeneral(),
             varietales: vino.obtenerVarietal(),
-            precioVino: vino.getPrecio(),
+            precioVino: vino.getPrecioARS(),
             bodega: vino.obtenerBodega(),
         }));
         return datosVinosRankeados;
     }
 
     generarArchivoExcel(datosVinosRankeados: any[]){ //43.generarArchivoExcel()
-        const generadorArchivoExel = new GeneradorArchivoExcel();
-        generadorArchivoExel.generarArchivo(datosVinosRankeados)
+        generadorArchivoExcel.generarArchivo(datosVinosRankeados)
     }
 
-    
     getTiposReportes(): string[] {
         return this.tiposReportes;
     }
