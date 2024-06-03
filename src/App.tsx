@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import './App.css'
-import { Header } from './components/Header'
-import { GenReportRankingVinos } from './pages/GenReportRankingVinos'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes,} from 'react-router-dom';
+import { PantallaGenerarReporteRankingVino } from './Interfaz/PantallaGenerarReporteRankingVino'
+import { Home } from './Interfaz/Home'
 
 function App() {
 
   return (
-<>
-    <Header />
-    
-    <GenReportRankingVinos />
-
+  <>
+    <Router>
+      <Routes>
+        <Route path="/" Component={Home} />
+        <Route path="/GenReportRankingVinos" Component={PantallaGenerarReporteRankingVino} />
+      </Routes>
+    </Router>
 </>
   )
 }

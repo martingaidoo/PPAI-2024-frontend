@@ -6,6 +6,7 @@ body {
   background-color: black;
     /* Para el fondo imagen*/
   background-image: url(/../images.jpg!d); /* imagen del vino */
+  
   background-size: auto 100%; /* Ajusta la imagen para que se ajuste solo al alto del body y se extienda por completo horizontalmente */
   background-position: right center; /* Posiciona la imagen en el lado derecho y centrada verticalmente */
   background-repeat: no-repeat; /* Evita que la imagen se repita si no llena completamente el body */
