@@ -28,7 +28,7 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     useEffect(() => {
       // Creamos una instancia del gestor cuando se selecciona la opcionGenerarRankingDeVinos
       const main = new Main();
-      const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, mostrarYSolicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte); // Pasamos los vinos al gestor
+      const gestor = new GestorGenerarReporteRankingVino(main.getVinos(), solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, mostrarYSolicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte); // Pasamos los metodos de la pantalla como parametros al gestor
       setGestor(gestor);
   
       habilitarPantalla() // 2. habilitarPantalla()
@@ -155,7 +155,6 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
                 </div>
               </div>
               {showAlert && <AlertOnScreen showAlert={showAlert} setShowAlert={setShowAlert} />}
-              
             </div>
           </div>
         </div>

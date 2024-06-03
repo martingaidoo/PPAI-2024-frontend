@@ -21,11 +21,37 @@ export class Vino {
         this.calificacionGeneral = calificacionGeneral;
     }
 
-    getNombre(): string {
-        return this.nombre;
+    obtenerReseñas(fechaInicio: Date, fechaFin: Date): boolean {// 19.obtenerReseñas()
+        let bandera = false;
+        for (let reseña of this.reseñas) {
+            if (reseña.estaEnPeriodo(fechaInicio, fechaFin) && reseña.sosDeSommelier()) { // 20.estaEnPeriodo() 21.sosDeSommelier()
+                bandera = true;
+            }
+        }
+        return bandera;
     }
 
-    obtenerVarietal(): Varietal[] {
+    calcularRanking(fechaInicio:Date, fechaFin:Date): number { // 23.calcularRanking()
+        let puntaje = 0;
+        let reseñas = 0;
+        for (let reseña of this.reseñas) {
+            if (reseña.estaEnPeriodo(fechaInicio, fechaFin) && reseña.sosDeSommelier() ){ //24.estaEnPeriodo()  25.sosDeSommelier() 26.getPuntaje()
+                puntaje += reseña.getPuntaje();
+                reseñas++;
+            }
+        }
+        return reseñas > 0 ? parseFloat((puntaje / reseñas).toFixed(2)) : 0;
+    }
+
+    obtenerBodega(){ // 30.obtenerBodega()
+        let bodega = {
+            nombre: this.bodega.getNombre(), // 31.getNombre()
+            ubicacion: this.bodega.obtenerUbicacion(), // 32.obtenerUbicacion()
+        }
+        return bodega;
+    }
+
+    obtenerVarietal(): Varietal[] { //38.obtenerVarietal()
         let varietales = [];
         for (let varietal of this.varietal) {
             varietales.push(varietal);
@@ -33,37 +59,26 @@ export class Vino {
         return varietales;
     }
 
-    getAño(): number {
-        return this.año;
-    }
 
-    obtenerBodega(){
-        let bodega = {
-            nombre: this.bodega.getNombre(),
-            ubicacion: this.bodega.obtenerUbicacion(),
-        }
-
-        return bodega;
-    }
-
-    getPrecio(): number {
+    getPrecio(): number {//40.getPrecioVino()
         return this.precio;
     }
 
-    obtenerReseñas(fechaInicio: Date, fechaFin: Date): boolean {
-        let bandera = false;
-        for (let reseña of this.reseñas) {
-            if (reseña.estaEnPeriodo(fechaInicio, fechaFin) && reseña.sosDeSommelier()) {
-                bandera = true;
-            }
-        }
-        console.log("de las reseña sale: "+ bandera)
-        return bandera;
+
+    getNombre(): string { // 41.getNombre()
+        return this.nombre;
     }
 
-    calcularRanking(): number {
-        const totalPuntajes = this.reseñas.reduce((acc, reseña) => acc + reseña.getPuntaje(), 0);
-        return this.reseñas.length > 0 ? parseFloat((totalPuntajes / this.reseñas.length).toFixed(2)) : 0;
+    getCalificacionGeneral(): number{ //42.getCalificacionGeneral()
+        return this.calificacionGeneral;
+    }
+
+
+
+
+    
+    getAño(): number {
+        return this.año;
     }
 
     setNombre(nombre: string): void {
@@ -90,7 +105,5 @@ export class Vino {
         this.reseñas.push(reseña);
     }
 
-    getCalificacionGeneral(): number{
-        return this.calificacionGeneral;
-    }
+
 }
