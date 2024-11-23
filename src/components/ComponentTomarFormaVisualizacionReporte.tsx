@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-interface ComponenteTomarFormaVisualizacionReporteProps {
+interface ComponentTomarFormaVisualizacionReporteProps {
   tipoVisualizacion: string[];
   onFormaVisualizacionReporte: (formaVisualizacion: string) => void;
 }
 
-export const ComponenteTomarFormaVisualizacionReporte: React.FC<ComponenteTomarFormaVisualizacionReporteProps> = ({ tipoVisualizacion, onFormaVisualizacionReporte }) => {
+export const ComponentTomarFormaVisualizacionReporte: React.FC<ComponentTomarFormaVisualizacionReporteProps> = ({ tipoVisualizacion, onFormaVisualizacionReporte }) => {
   const [formaVisualizacionReporte, setFormaVisualizacionReporte] = useState<string>();
 
   const tomarFormaVisualizacionReporte = (event: React.ChangeEvent<HTMLSelectElement>) => {

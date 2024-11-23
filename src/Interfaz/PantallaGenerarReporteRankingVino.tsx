@@ -1,94 +1,66 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { ComponentTomarFecha } from '../components/ComponentTomarFecha';
-import { ComponenteTomarFormaVisualizacionReporte } from '../components/ComponenteTomarFormaVisualizacionReporte';
+import { ComponentTomarFormaVisualizacionReporte } from '../components/ComponentTomarFormaVisualizacionReporte';
 import { ComponentTipoReporte } from '../components/ComponentTipoReporte';
 import { ComponentBotonConfirmacion } from '../components/ComponentBotonConfirmacion';
 import { Header } from '../components/Header';
-//import { Main } from '../Controlador/Datos';
-import {main} from '../Controlador/Main';
-import { GestorGenerarReporteRankingVino } from '../Controlador/GestorGenerarReporteRankingVino'; // Importamos el gestor
 import AlertOnScreen from '../components/ComponentToast';
 
 export const PantallaGenerarReporteRankingVino: React.FC = () => {
-  const [gestor, setGestor] = useState<GestorGenerarReporteRankingVino | null>(null); // Estado para el gestor
   const [pantalla, setPantalla] = useState<boolean>(false);
   const [habilitarTomarFechas, setHabilitarTomarFechas] = useState<boolean>(false);
   const [habilitarTipoReporte, setHabilitarTipoReporte] = useState<boolean>(false);
   const [habilitarFormaVisualizacion, setHabilitarFormaVisualizacion] = useState<boolean>(false);
   const [habilitarConfirmacion, setHabilitarConfirmacion] = useState<boolean>(false);
-  const [fechaInicio, setFechaInicio] = useState<Date>();
-  const [fechaFin, setFechaFin] = useState<Date>();
+  const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
+  const [fechaFin, setFechaFin] = useState<Date | null>(null);
   const [tipoReporteSeleccionado, setTipoReporteSeleccionado] = useState<string>("sin seleccion");
   const [tipoVisualizacionSeleccionada, setFormaVisualizacionReporte] = useState<string>("sin seleccion");
   const [confirmacionReporte, setConfirmacionReporte] = useState<boolean>(false);
-  let fechaValida: boolean = false;
   const [showAlert, setShowAlert] = useState(false); // Agrega este estado para mostrar la alerta de fecha invalida
   const [tiposReportes, setTiposReportes] = useState<any[]>([]);
   const [tipoVisualizacion, setTipoVisualizacion] = useState<any[]>([]);
 
-  const opcionGenerarRankingDeVinos = () => { //1. opcionGenerarRankingDeVinos()
-    
-    const gestor = main.traerGestorConDatos(solicitarSeleccionFechasInicioFin, mostrarYSolicitarTipoReporte, mostrarYSolicitarFormaVisualizacionReporte, solicitarConfirmacionReporte, mostrarConfirmacionGeneracionReporte)
-    useEffect(() => {
-      setGestor(gestor);
-  
-      habilitarPantalla() // 2. habilitarPantalla()
-  
-      gestor.opcionGenerarRankingDeVinos(); // 3.opcionGenerarRankingDeVinos()
-    }, []);
-  }
+  useEffect(() => {
+    habilitarPantalla(); // Habilitar la pantalla inicial
+  }, []);
 
-  const habilitarPantalla = () => {//2. habilitarPantalla()
+  const habilitarPantalla = () => {
     setPantalla(true);
-  }
+    setHabilitarTomarFechas(true); // Primer paso: seleccionar fechas
+  };
 
-  const  solicitarSeleccionFechasInicioFin = () => { //4. solicitarSeleccionFechaInicioFin()
-    setHabilitarTomarFechas(true);
-  }
-
-  const tomarSeleccionFechaInicio = (fecha:Date) => {//5. tomarSeleccionFechaInicio()
+  const tomarSeleccionFechaInicio = (fecha: Date) => {
     setFechaInicio(fecha);
-    
-    if (fecha && fechaFin && gestor)
-      {
-        fechaValida = gestor.tomarSeleccionFechasInicioFin(fecha, fechaFin) // 7.tomarSeleccionFechaInicioFin()
-        if (!fechaValida) // Llamamos al método del gestor
-        {
-          setTipoReporteSeleccionado("sin seleccion")
-          setFormaVisualizacionReporte("sin seleccion")
-          setShowAlert(true); // Muestra la alerta de fecha inválida
-        }
-      }
-  }
+    validarFechas(fecha, fechaFin);
+  };
   
-  const tomarSeleccionFechaFin = (fecha:Date) => { //6. tomarSeleccionFechaFin()
+  const tomarSeleccionFechaFin = (fecha: Date) => {
     setFechaFin(fecha);
-    if (fechaInicio && fecha && gestor)
-      {
-        fechaValida = gestor.tomarSeleccionFechasInicioFin(fechaInicio, fecha) // 7.tomarSeleccionFechaInicioFin()
-        if (!fechaValida) // Llamamos al método del gestor
-        {
-          setTipoReporteSeleccionado("sin seleccion")
-          setFormaVisualizacionReporte("sin seleccion")
-          setShowAlert(true); // Muestra la alerta de fecha inválida
-        }
-      }
-  }
+    validarFechas(fechaInicio, fecha);
+  };
+
+  const validarFechas = (inicio: Date | null, fin: Date | null) => {
+    if (inicio && fin && inicio > fin) {
+      setShowAlert(true); // Mostrar alerta si las fechas son inválidas
+    } else if (inicio && fin) {
+      setHabilitarTipoReporte(true); // Habilitar el siguiente paso
+      setShowAlert(false);
+    }
+  };
 
   const mostrarYSolicitarTipoReporte = (reportes:string[]) => {// 9. mostrarYSolicitarTipoReporte()
     setTiposReportes(reportes)
     setHabilitarTipoReporte(true);
   }
 
-  const tomarSeleccionTipoReporte = (reseña:string) =>{ //10. tomarSeleccionTipoReporte()
-    setTipoReporteSeleccionado(reseña);
-    if (reseña !== "sin seleccion" && reseña!=="" && gestor) {
-      gestor.tomarSeleccionTipoReporte(tipoReporteSeleccionado); // 11. tomarSeleccionTipoReporte()
+  const tomarSeleccionTipoReporte = (tipo: string) => {
+    setTipoReporteSeleccionado(tipo);
+    if (tipo !== 'sin seleccion') {
+      setHabilitarFormaVisualizacion(true); // Habilitar selección de forma de visualización
     }
-    else{
-      setFormaVisualizacionReporte("sin seleccion")
-    }
-  }
+  };
 
   const mostrarYSolicitarFormaVisualizacionReporte = (tiposVisualizacion:string[]) => {//12. mostrarYSolicitarFormaVisualizacionReporte()
     setTipoVisualizacion(tiposVisualizacion)
@@ -106,12 +78,10 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     setHabilitarConfirmacion(true);
   }
 
-  const tomarConfirmacionReporte = () => { //16. tomarConfirmacionReporte()
+  const tomarConfirmacionReporte = () => {
     setConfirmacionReporte(true);
-    if (gestor) {
-      gestor.tomarConfirmacionReporte(); // 17. tomarConfirmacionReporte()
-    }
-  }
+    opcionGenerarRankingDeVinos(); // Llamar al backend
+  };
 
   const mostrarConfirmacionGeneracionReporte = () => {//45. mostrarConfirmacionGeneracionReporte()
     alert('Reporte generado exitosamente');
@@ -121,29 +91,77 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const finCU = () => { // 46.finCU()
     window.location.href = '/'; // Redirige a la ruta raíz
   }
-  
-  opcionGenerarRankingDeVinos(); // 1. opcionGenerarRankingDeVinos(
+
+  const opcionGenerarRankingDeVinos = async () => {
+    try {
+      const request = {
+        fechaInicio: fechaInicio?.toISOString().split('T')[0],
+        fechaFin: fechaFin?.toISOString().split('T')[0],
+        tipoReporteSeleccionado,
+        confirmacionReporte,
+      };
+
+      // Validar datos antes de enviar
+      if (!request.fechaInicio || !request.fechaFin || !request.tipoReporteSeleccionado || request.tipoReporteSeleccionado === 'sin seleccion') {
+        setShowAlert(true); // Mostrar alerta si faltan datos
+        return;
+      }
+      const response = await axios.post('/api/reportes/generar-ranking-de-vinos', request, {
+        responseType: 'blob', // Indicar que esperamos un archivo
+      });
+
+      // Procesar respuesta y descargar archivo
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'reporte-ranking-vinos.xlsx'); // Nombre del archivo
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      alert('¡Reporte generado exitosamente!');
+    } catch (error) {
+      console.error('Error al generar el reporte:', error);
+      alert('Hubo un error al generar el reporte. Por favor, intenta nuevamente.');
+    }
+  };
+
 
   return (
     <>
       <Header />
-      {pantalla && gestor && ( // Verificamos que el gestor esté definido
-      
-        <div className='container ms-lg-5 mt-5 '>
-
-          <div className="row-4 ">
-            <div className='col-md-9 col-sm-12 ' >
+      {pantalla && (
+        <div className="container ms-lg-5 mt-5">
+          <div className="row-4">
+            <div className="col-md-9 col-sm-12">
               <div className="card text-bg-dark text-center">
                 <div className="card-header">
-                  <h4>Formulario de Generacion De Ranking Vinos</h4>
+                  <h4>Formulario de Generación de Ranking de Vinos</h4>
                 </div>
                 <div className="card-body">
-                  {habilitarTomarFechas && <ComponentTomarFecha onFechaInicioChange={tomarSeleccionFechaInicio} onFechaFinChange={tomarSeleccionFechaFin}/>} {/* Pasamos el método del gestor como prop */}
-                  {habilitarTipoReporte && <ComponentTipoReporte tiposReportes={tiposReportes} onTipoReseñaChange={tomarSeleccionTipoReporte}/>} {/* Pasamos el método del gestor como prop */}
-                  {habilitarFormaVisualizacion && <ComponenteTomarFormaVisualizacionReporte tipoVisualizacion={tipoVisualizacion} onFormaVisualizacionReporte={tomarFormaVisualizacionReporte}/> }{/* Pasamos el método del gestor como prop */}
+                  {habilitarTomarFechas && (
+                    <ComponentTomarFecha
+                      onFechaInicioChange={tomarSeleccionFechaInicio}
+                      onFechaFinChange={tomarSeleccionFechaFin}
+                    />
+                  )}
+                  {habilitarTipoReporte && (
+                    <ComponentTipoReporte
+                      tiposReportes={tiposReportes}
+                      onTipoReseñaChange={tomarSeleccionTipoReporte}
+                    />
+                  )}
+                  {habilitarFormaVisualizacion && (
+                    <ComponentTomarFormaVisualizacionReporte
+                      tipoVisualizacion={tipoVisualizacion}
+                      onFormaVisualizacionReporte={() => {}} // Aquí va la lógica de visualización
+                    />
+                  )}
                 </div>
                 <div className="card-footer text-body-secondary">
-                  {habilitarConfirmacion && <ComponentBotonConfirmacion onConfirmacionReporte={tomarConfirmacionReporte}/>} {/* Pasamos el método del gestor como prop */}
+                  {habilitarConfirmacion && (
+                    <ComponentBotonConfirmacion onConfirmacionReporte={tomarConfirmacionReporte} />
+                  )}
                 </div>
               </div>
               {showAlert && <AlertOnScreen showAlert={showAlert} setShowAlert={setShowAlert} />}

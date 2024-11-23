@@ -1,4 +1,3 @@
-import { Varietal } from "../Modelo/varietal";
 import * as XLSX from 'xlsx';
 
 interface Bodega {
@@ -9,7 +8,6 @@ interface Bodega {
 interface Vino {
     nombreVino: string;
     calificacionSomelier: number;
-    varietales: Varietal[];
     precioVino: number;
     bodega: Bodega;
     calificacionSommelier: number;
@@ -46,7 +44,6 @@ export class GeneradorArchivoExcel {
                 "Calificación General": dato.calificacionGeneral,
                 "Precio Sugerido": dato.precioVino,
                 Bodega: dato.bodega.nombre,
-                Varietal: dato.varietales.map(varietal => varietal.getDescripcion()).join(", "),
                 Región: dato.bodega.ubicacion[0],
                 País: dato.bodega.ubicacion[dato.bodega.ubicacion.length - 1]
                 //su nombre, la calificación de sommelier, la calificación general, su precio sugerido, su bodega, su
