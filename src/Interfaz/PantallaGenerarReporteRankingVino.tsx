@@ -69,7 +69,7 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
 
   const fetchTipoVisualizaciones = async () => {
     try {
-      const response = await axios.get('https://r277jqvx-8080.brs.devtunnels.ms/api/reportes/visualizaciones');
+      const response = await axios.get('https://3cwqnm3k-8080.brs./api/reportes/visualizaciones');
       setTipoVisualizacion(response.data);
     } catch (error) {
       console.error('Error al cargar las formas de visualización:', error);
@@ -123,10 +123,11 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
         setShowAlert(true); // Mostrar alerta si faltan datos
         return;
       }
-      const response = await axios.post('https://r277jqvx-8080.brs.devtunnels.ms/api/generar-ranking-de-vinos', request, {
+      const response = await axios.post('https://3cwqnm3k-8080.brs.devtunnels.ms/api/generar-ranking-de-vinos', request, {
        responseType: 'blob', // Indicar que esperamos un archivo
       });
 
+      console.log('Respuesta del backend:', response);
       // Procesar respuesta y descargar archivo
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
