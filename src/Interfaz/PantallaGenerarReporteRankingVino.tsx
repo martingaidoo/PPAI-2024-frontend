@@ -6,7 +6,7 @@ import { ComponentTipoReporte } from '../components/ComponentTipoReporte';
 import { ComponentBotonConfirmacion } from '../components/ComponentBotonConfirmacion';
 import { Header } from '../components/Header';
 import AlertOnScreen from '../components/ComponentToast';
-import { GestorGenerarReporteRankingVino } from '../controller/GestorGenerarReporteRankingVino';
+
 
 export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [pantalla, setPantalla] = useState<boolean>(false);
@@ -24,15 +24,21 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [tipoVisualizacion, setTipoVisualizacion] = useState<any[]>([]);
 
 
-  const gestor = new GestorGenerarReporteRankingVino();
   useEffect(() => {
     habilitarPantalla(); // Habilitar la pantalla inicial
+    fetchTiposReportes(); // Cargar tipos de reportes desde el backend
+    fetchTipoVisualizaciones(); // Cargar formas de visualización desde el backend
   }, []);
 
   const habilitarPantalla = () => {
     setPantalla(true);
-    setHabilitarTomarFechas(true); // Primer paso: seleccionar fechas
+    // llama al metodo del gestor opcionGenerarRankingDeVinos()
+    solicitarSeleccionFechasInicioFin(); // Primer paso: seleccionar fechas
   };
+
+  const solicitarSeleccionFechasInicioFin = () => {
+    setHabilitarTomarFechas(true);
+  }
 
   const tomarSeleccionFechaInicio = (fecha: Date) => {
     setFechaInicio(fecha);
@@ -48,32 +54,50 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     if (inicio && fin && inicio > fin) {
       setShowAlert(true); // Mostrar alerta si las fechas son inválidas
     } else if (inicio && fin) {
-      setHabilitarTipoReporte(true); // Habilitar el siguiente paso
+      mostrarYSolicitarTipoReporte()
       setShowAlert(false);
     }
   };
+  const fetchTiposReportes = async () => {
+    try {
+      const response = await axios.get('/api/reportes/tipos');
+      setTiposReportes(response.data);
+    } catch (error) {
+      console.error('Error al cargar los tipos de reportes:', error);
+    }
+  };
 
-  const mostrarYSolicitarTipoReporte = (reportes:string[]) => {// 9. mostrarYSolicitarTipoReporte()
-    setTiposReportes(reportes)
+  const fetchTipoVisualizaciones = async () => {
+    try {
+      const response = await axios.get('https://r277jqvx-8080.brs.devtunnels.ms/api/reportes/visualizaciones');
+      setTipoVisualizacion(response.data);
+    } catch (error) {
+      console.error('Error al cargar las formas de visualización:', error);
+    }
+  };
+
+  const mostrarYSolicitarTipoReporte = () => {// 9. mostrarYSolicitarTipoReporte()
     setHabilitarTipoReporte(true);
   }
+
 
   const tomarSeleccionTipoReporte = (tipo: string) => {
     setTipoReporteSeleccionado(tipo);
     if (tipo !== 'sin seleccion') {
-      setHabilitarFormaVisualizacion(true); // Habilitar selección de forma de visualización
+      mostrarYSolicitarFormaVisualizacionReporte()
     }
   };
 
-  const mostrarYSolicitarFormaVisualizacionReporte = (tiposVisualizacion:string[]) => {//12. mostrarYSolicitarFormaVisualizacionReporte()
-    setTipoVisualizacion(tiposVisualizacion)
+  const mostrarYSolicitarFormaVisualizacionReporte = () => {//12. mostrarYSolicitarFormaVisualizacionReporte()
+    // setTipoVisualizacion(tiposVisualizacion)
     setHabilitarFormaVisualizacion(true);
   }
 
   const tomarFormaVisualizacionReporte = (formaVisualizacionReporte: string) => { //13. tomarFormaVisualizacionReporte()
     setFormaVisualizacionReporte(formaVisualizacionReporte);
-    if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!== "" && gestor) {
-      gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // 14. tomarFormaVisualizacionReporte()
+    if (formaVisualizacionReporte !== "sin seleccion" && formaVisualizacionReporte!=="" && tipoReporteSeleccionado !== "sin seleccion" && tipoReporteSeleccionado!== "" ) {
+      //gestor.tomarFormaVisualizacionReporte(formaVisualizacionReporte); // 14. tomarFormaVisualizacionReporte()
+      solicitarConfirmacionReporte();
     }
   }
 
@@ -81,10 +105,50 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
     setHabilitarConfirmacion(true);
   }
 
-  const tomarConfirmacionReporte = () => {
+  const tomarConfirmacionReporte = async () => {
     setConfirmacionReporte(true);
-    opcionGenerarRankingDeVinos(); // Llamar al backend
-  };
+
+    //aca adentro
+    try {
+      const request = {
+        fechaInicio: fechaInicio?.toISOString().split('T')[0],
+        fechaFin: fechaFin?.toISOString().split('T')[0],
+        tipoReporteSeleccionado,
+        confirmacionReporte,
+        formaVisualizacionReporte: tipoVisualizacionSeleccionada,
+      };
+
+      // Validar datos antes de enviar
+      if (!request.fechaInicio || !request.fechaFin || !request.tipoReporteSeleccionado || request.tipoReporteSeleccionado === 'sin seleccion') {
+        setShowAlert(true); // Mostrar alerta si faltan datos
+        return;
+      }
+      console.log('Request:', request);
+     // const response = await axios.post('https://r277jqvx-8080.brs.devtunnels.ms/api/generar-ranking-de-vinos', request, {
+     //   responseType: 'blob', // Indicar que esperamos un archivo
+      //});
+
+      const pruebaExcel = "PK\x03\x04\x14\x00\x00\x00\x08\x00\xca)yY\x07AMb\x81\x00\x00\x00\xb1\x00\x00\x00\x10\x00\x00\x00docProps/app.xmlM\x8e=\x0b\x021\x10D\xff\xcaq\xbd\xb7A\xc1Bb@\xd0R\xb0\xb2\x0f{\x1b/\x90dC\xb2B~\xbe9\xc1\x8fn\x1eo\x18F\xdf\ng*\xe2\xa9\x0e-\x86T\x8f\xe3"
+
+
+
+
+      // Procesar respuesta y descargar archivo
+      //const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([pruebaExcel]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'reporte-ranking-vinos.xlsx'); // Nombre del archivo
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      mostrarConfirmacionGeneracionReporte();
+    } catch (error) {
+      console.error('Error al generar el reporte:', error);
+      alert('Hubo un error al generar el reporte. Por favor, intenta nuevamente.');
+    }
+    };
 
   const mostrarConfirmacionGeneracionReporte = () => {//45. mostrarConfirmacionGeneracionReporte()
     alert('Reporte generado exitosamente');
@@ -94,40 +158,6 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const finCU = () => { // 46.finCU()
     window.location.href = '/'; // Redirige a la ruta raíz
   }
-
-  const opcionGenerarRankingDeVinos = async () => {
-    try {
-      const request = {
-        fechaInicio: fechaInicio?.toISOString().split('T')[0],
-        fechaFin: fechaFin?.toISOString().split('T')[0],
-        tipoReporteSeleccionado,
-        confirmacionReporte,
-      };
-
-      // Validar datos antes de enviar
-      if (!request.fechaInicio || !request.fechaFin || !request.tipoReporteSeleccionado || request.tipoReporteSeleccionado === 'sin seleccion') {
-        setShowAlert(true); // Mostrar alerta si faltan datos
-        return;
-      }
-      const response = await axios.post('/api/generar-ranking-de-vinos', request, {
-        responseType: 'blob', // Indicar que esperamos un archivo
-      });
-
-      // Procesar respuesta y descargar archivo
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'reporte-ranking-vinos.xlsx'); // Nombre del archivo
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      alert('¡Reporte generado exitosamente!');
-    } catch (error) {
-      console.error('Error al generar el reporte:', error);
-      alert('Hubo un error al generar el reporte. Por favor, intenta nuevamente.');
-    }
-  };
 
 
   return (
@@ -157,7 +187,10 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
                   {habilitarFormaVisualizacion && (
                     <ComponentTomarFormaVisualizacionReporte
                       tipoVisualizacion={tipoVisualizacion}
-                      onFormaVisualizacionReporte={() => {}} // Aquí va la lógica de visualización
+                      onFormaVisualizacionReporte={(formaVisualizacion) => {
+                        console.log(formaVisualizacion);
+                        tomarFormaVisualizacionReporte(formaVisualizacion);
+                      }} // Aquí va la lógica de visualización
                     />
                   )}
                 </div>

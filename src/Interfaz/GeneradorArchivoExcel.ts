@@ -15,6 +15,7 @@ interface Vino {
 }
 
 export class GeneradorArchivoExcel {
+    
     constructor() {}
 
     generarArchivo(datos: Vino[]) { //44. generarArchivo()
