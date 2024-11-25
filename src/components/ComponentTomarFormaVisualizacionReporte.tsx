@@ -23,7 +23,7 @@ export const ComponentTomarFormaVisualizacionReporte: React.FC<ComponentTomarFor
             <select className="form-control bg-black text-white" onChange={tomarFormaVisualizacionReporte}>
               <option value="">Selecciona una opción</option>
               <option value="pdf">PDF</option>
-              <option value="excel">Excel</option>
+              <option value="Excel">Excel</option>
               <option value="pantalla">En pantalla</option>
               {
               //tipoVisualizacion.map((opcion, index) => (

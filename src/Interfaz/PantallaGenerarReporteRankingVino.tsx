@@ -113,9 +113,9 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
       const request = {
         fechaInicio: fechaInicio?.toISOString().split('T')[0],
         fechaFin: fechaFin?.toISOString().split('T')[0],
-        tipoReporteSeleccionado,
-        confirmacionReporte,
-        formaVisualizacionReporte: tipoVisualizacionSeleccionada,
+        tipoReporteSeleccionado: tipoReporteSeleccionado,
+        confirmacionReporte : true,
+        tipoVisualizacionSeleccionada: tipoVisualizacionSeleccionada,
       };
 
       // Validar datos antes de enviar
@@ -123,19 +123,12 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
         setShowAlert(true); // Mostrar alerta si faltan datos
         return;
       }
-      console.log('Request:', request);
-     // const response = await axios.post('https://r277jqvx-8080.brs.devtunnels.ms/api/generar-ranking-de-vinos', request, {
-     //   responseType: 'blob', // Indicar que esperamos un archivo
-      //});
-
-      const pruebaExcel = "PK\x03\x04\x14\x00\x00\x00\x08\x00\xca)yY\x07AMb\x81\x00\x00\x00\xb1\x00\x00\x00\x10\x00\x00\x00docProps/app.xmlM\x8e=\x0b\x021\x10D\xff\xcaq\xbd\xb7A\xc1Bb@\xd0R\xb0\xb2\x0f{\x1b/\x90dC\xb2B~\xbe9\xc1\x8fn\x1eo\x18F\xdf\ng*\xe2\xa9\x0e-\x86T\x8f\xe3"
-
-
-
+      const response = await axios.post('https://r277jqvx-8080.brs.devtunnels.ms/api/generar-ranking-de-vinos', request, {
+       responseType: 'blob', // Indicar que esperamos un archivo
+      });
 
       // Procesar respuesta y descargar archivo
-      //const url = window.URL.createObjectURL(new Blob([response.data]));
-      const url = window.URL.createObjectURL(new Blob([pruebaExcel]));
+      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'reporte-ranking-vinos.xlsx'); // Nombre del archivo
