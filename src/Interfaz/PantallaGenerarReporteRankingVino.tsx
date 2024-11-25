@@ -6,6 +6,7 @@ import { ComponentTipoReporte } from '../components/ComponentTipoReporte';
 import { ComponentBotonConfirmacion } from '../components/ComponentBotonConfirmacion';
 import { Header } from '../components/Header';
 import AlertOnScreen from '../components/ComponentToast';
+import { GestorGenerarReporteRankingVino } from '../controller/GestorGenerarReporteRankingVino';
 
 export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [pantalla, setPantalla] = useState<boolean>(false);
@@ -22,6 +23,8 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
   const [tiposReportes, setTiposReportes] = useState<any[]>([]);
   const [tipoVisualizacion, setTipoVisualizacion] = useState<any[]>([]);
 
+
+  const gestor = new GestorGenerarReporteRankingVino();
   useEffect(() => {
     habilitarPantalla(); // Habilitar la pantalla inicial
   }, []);
@@ -106,7 +109,7 @@ export const PantallaGenerarReporteRankingVino: React.FC = () => {
         setShowAlert(true); // Mostrar alerta si faltan datos
         return;
       }
-      const response = await axios.post('/api/reportes/generar-ranking-de-vinos', request, {
+      const response = await axios.post('/api/generar-ranking-de-vinos', request, {
         responseType: 'blob', // Indicar que esperamos un archivo
       });
 
